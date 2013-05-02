@@ -3,7 +3,7 @@ A RESTful, flask wrapper API on CloudStack API.
 
 *Warning: Not RESTful at present state. Just a prototype.*
 
-###Mappings
+###Relationship between wrapper API and CloudStack API
  * GET /subject/verb?params -> GET verbSubject?params
  * GET /subject -> either listSubject or getSubject
  * POST /subject -> GET createSubject?params
