@@ -1,7 +1,7 @@
 #CloudStack RESTful API
 A RESTful, flask wrapper API on CloudStack API.
 
-*Warning: Not RESTful at present state. Just a prototype.*
+*Note: Not RESTful at present state. Just a prototype.*
 
 ###Relationship between wrapper API and CloudStack API
  * GET /subject/verb?params -> GET verbSubject?params
