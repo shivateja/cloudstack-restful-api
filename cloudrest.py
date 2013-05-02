@@ -34,53 +34,25 @@ def onlysubject(subject):
         if subject in apicache["list"].keys():
             verb = "list"
             command = get_command(subject, verb)
-            if command is None:
-                abort(404)
-            data = get_data(request.args)
-            response, error = make_request(command, data, None, host, port, apikey, secretkey, protocol, path)
         else:
             verb = "get"
             command = get_command(subject, verb)
-            if command is None:
-                abort(404)
-            data = get_data(request.args)
-            app.logger.info(str(data))
-            response, error = make_request(command, data, None, host, port, apikey, secretkey, protocol, path)
-            app.logger.info(str(response))
-        if error is not None:
-            return error, get_error_code(error)
-        return response
     if request.method == 'POST':
         verb = "create"
         command = get_command(subject, verb)
-        if command is None:
-            abort(404)
-        data = get_data(request.args)
-        response, error = make_request(command, data, None, host, port, apikey, secretkey, protocol, path)
-        if error is not None:
-            return error, get_error_code(error)
-        return response
     if request.method == 'PUT':
         verb = "update"
         command = get_command(subject, verb)
-        if command is None:
-            abort(404)
-        data = get_data(request.args)
-        response, error = make_request(command, data, None, host, port, apikey, secretkey, protocol, path)
-        if error is not None:
-            return error, get_error_code(error)
-        return response
-
     if request.method == 'DELETE':
         verb = "delete"
         command = get_command(subject, verb)
-        if command is None:
-            abort(404)
-        data = get_data(request.args)
-        response, error = make_request(command, data, None, host, port, apikey, secretkey, protocol, path)
-        if error is not None:
-           abort(get_error_code(error))
-        return response
+    if command is None:
+        abort(404)
+    data = get_data(request.args)
+    response, error = make_request(command, data, None, host, port, apikey, secretkey, protocol, path)
+    if error is not None:
+        return error, get_error_code(error)
+    return response
 
 @app.route("/<subject>/<verb>")
 def verbandsubject(subject, verb):
