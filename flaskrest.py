@@ -1,10 +1,6 @@
 from requester import make_request
 from flask import Flask, request, abort
 from precache import apicache
-import simplejson as json
-import logging
-from logging.handlers import RotatingFileHandler
-import unicodedata
 
 app = Flask(__name__)
 
@@ -24,7 +20,13 @@ def get_command(subject, verb):
     return None
 
 def get_error_code(error):
-    return int(error[11:14])
+    return int(error[11:14]) #Ugly
+
+def get_data(multidict):
+    """Default type(request.args) is multidict. Converts it dict that can be passed to make_request"""
+    data = {}
+    for key in multidict.keys():
+        data[key] = multidict.get(key,"")
 
 @app.route('/<subject>')
 def onlysubject(subject):
@@ -34,14 +36,14 @@ def onlysubject(subject):
             command = get_command(subject, verb)
             if command is None:
                 abort(404)
-            data = dict(request.args) #Raising error 530 for some unknown issue if data is not empty
+            data = get_data(request.args)
             response, error = make_request(command, data, None, host, port, apikey, secretkey, protocol, path)
         else:
             verb = "get"
             command = get_command(subject, verb)
             if command is None:
                 abort(404)
-            data = dict(request.args)
+            data = get_data(request.args)
             app.logger.info(str(data))
             response, error = make_request(command, data, None, host, port, apikey, secretkey, protocol, path)
             app.logger.info(str(response))
@@ -53,7 +55,7 @@ def onlysubject(subject):
         command = get_command(subject, verb)
         if command is None:
             abort(404)
-        data = dict(request.args)
+        data = get_data(request.args)
         response, error = make_request(command, data, None, host, port, apikey, secretkey, protocol, path)
         if error is not None:
             return error, get_error_code(error)
@@ -63,7 +65,7 @@ def onlysubject(subject):
         command = get_command(subject, verb)
         if command is None:
             abort(404)
-        data = dict(request.args)
+        data = get_data(request.args)
         response, error = make_request(command, data, None, host, port, apikey, secretkey, protocol, path)
         if error is not None:
             return error, get_error_code(error)
@@ -74,7 +76,7 @@ def onlysubject(subject):
         command = get_command(subject, verb)
         if command is None:
             abort(404)
-        data = dict(request.args)
+        data = get_data(request.args)
         response, error = make_request(command, data, None, host, port, apikey, secretkey, protocol, path)
         if error is not None:
            abort(get_error_code(error))
@@ -85,7 +87,7 @@ def verbandsubject(subject, verb):
     command = get_command(subject, verb)
     if command is None:
         abort(404)
-    data = dict(request.args)
+    data = get_data(request.args)
     response, error = make_request(command, data, None, host, port, apikey, secretkey, protocol, path)
     if error is not None:
         return error, get_error_code(error)
@@ -93,7 +95,4 @@ def verbandsubject(subject, verb):
         return response
 
 if __name__ == '__main__':
-    handler = RotatingFileHandler('flask.log', maxBytes=10000, backupCount=1)
-    handler.setLevel(logging.INFO)
-    app.logger.addHandler(handler)
     app.run(debug=True)
