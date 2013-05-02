@@ -1,6 +1,6 @@
 from requester import make_request
-from flask import Flask, request, abort
 from precache import apicache
+from flask import Flask, request, abort
 
 app = Flask(__name__)
 
@@ -27,6 +27,7 @@ def get_data(multidict):
     data = {}
     for key in multidict.keys():
         data[key] = multidict.get(key,"")
+    return data
 
 @app.route('/<subject>')
 def onlysubject(subject):
